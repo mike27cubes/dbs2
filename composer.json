@@ -1,0 +1,17 @@
+{
+    "name":"27Cubes/dbs2",
+    "description":"DBS2",
+    "type":"library",
+    "license": "proprietary",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "3.7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "27Cubes\\DbSmart2\\": "library/"
+        }
+    }
+}
