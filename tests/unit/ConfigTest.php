@@ -12,16 +12,16 @@
  * @since      %NEXT_VERSION%
  */
 
-namespace 27Cubes\DbSmart2;
+namespace Cubes\DbSmart2;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {
-	/**
-	 * Useless test to start out
-	 */
-	public function testGetInstance()
-	{
-		$obj = \27Cubes\DbSmart2\Config();
-		$this->assertInstanceOf('\27Cubes\DbSmart2\Config', $obj);
-	}
+    /**
+     * Useless test to start out
+     */
+    public function testGetInstance()
+    {
+        $obj = new \Cubes\DbSmart2\Config();
+        $this->assertInstanceOf('\Cubes\DbSmart2\Config', $obj);
+    }
 }
