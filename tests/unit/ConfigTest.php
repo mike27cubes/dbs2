@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Tests the Sptk\DbConnectionPool\Manager class
+ * Tests the DbSmart2 Config class
  *
  * PHP version 5.3
  *
