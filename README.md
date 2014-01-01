@@ -7,7 +7,7 @@ read upgrade files from configured directory
 
 sort files into x.y.z release number order
 
-X break upgrade file contents into XX.YY schema revisions
+~~break upgrade file contents into XX.YY schema revisions~~
 
 determine what revisions need to be executed
 
