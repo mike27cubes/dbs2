@@ -1,0 +1,58 @@
+<project name="DbSmart2" default="build">
+    <target name="clean">
+        <delete includeemptydirs="true">
+            <fileset dir="${basedir}/build" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/phpdoc"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+    </target>
+
+    <target name="phpcs" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/phpcs" output="${basedir}/build/logs/checkstyle.xml" failonerror="false">
+            <arg line="--standard=PSR1 --standard=PSR2 --report=checkstyle --ignore=*/tests/*,*/vendor/*,*/build/* --config-set show_warnings 0 ."/>
+        </exec>
+    </target>
+
+    <target name="phpmd" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/phpmd" failonerror="false">
+            <arg line=". xml codesize
+              --reportfile ${basedir}/build/logs/pmd.xml
+              --exclude */tests/*,*/vendor/*,*/build/*"/>
+        </exec>
+    </target>
+
+    <target name="phpcpd" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/phpcpd" failonerror="false">
+            <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml --exclude tests --exclude vendor --exclude build ."/>
+        </exec>
+    </target>
+
+    <target name="pdepend" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/pdepend" failonerror="false">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg" />
+            <arg value="--ignore=tests,vendor,build" />
+            <arg path="${basedir}" />
+        </exec>
+    </target>
+
+    <target name="phpunit" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/phpunit" failonerror="true">
+        </exec>
+    </target>
+
+    <target name="phpdoc" depends="prepare">
+        <exec dir="${basedir}" executable="./vendor/bin/phpdoc.php" failonerror="false">
+            <arg line="-d ${basedir}/library -t ${basedir}/build/phpdoc" />
+        </exec>
+    </target>
+
+    <target name="build" depends="clean,prepare,phpcs,phpmd,phpcpd,pdepend,phpunit,phpdoc"/>
+
+</project>
