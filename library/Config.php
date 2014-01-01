@@ -13,6 +13,13 @@
 
 namespace Cubes\DbSmart2;
 
+/**
+ * Config
+ *
+ * @vendor     27 Cubes
+ * @package    DbSmart2
+ * @since      %NEXT_VERSION%
+ */
 class Config
 {
 }

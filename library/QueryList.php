@@ -13,10 +13,27 @@
 
 namespace Cubes\DbSmart2;
 
+/**
+ * Query List
+ *
+ * @vendor     27 Cubes
+ * @package    DbSmart2
+ * @since      %NEXT_VERSION%
+ */
 class QueryList
 {
-    protected $queries;
+    /**
+     * The queries
+     *
+     * @var array
+     */
+    protected $queries = array();
 
+    /**
+     * Constructor
+     *
+     * @param  array $queries [optional] the queries
+     */
     public function __construct($queries = array())
     {
         if (is_array($queries) && !empty($queries)) {
@@ -39,7 +56,7 @@ class QueryList
      * Joins the given query list into
      *
      * @param  QueryList $toJoin
-     * @return self fluent interface
+     * @return QueryList fluent interface
      */
     public function joinWith(QueryList $toJoin)
     {
