@@ -3,18 +3,18 @@ dbs2
 
 goals
 
-read upgrade files from configured directory
+- [ ] read upgrade files from configured directory
 
-sort files into x.y.z release number order
+- [ ] sort files into x.y.z release number order
 
-~~break upgrade file contents into XX.YY schema revisions~~
+- [x] break upgrade file contents into XX.YY schema revisions
 
-determine what revisions need to be executed
+- [ ] determine what revisions need to be executed
 
-execute revisions & update tracker
+- [ ] execute revisions & update tracker
 
-built in cli script
+- [ ] built in cli script
 
-configuration loaded from .ini file
+- [ ] configuration loaded from .ini file
 
-custom configuration plugins?
+- [ ] custom configuration plugins?
