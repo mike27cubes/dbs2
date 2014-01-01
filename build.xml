@@ -42,6 +42,14 @@
         </exec>
     </target>
 
+    <target name="phploc" description="Measure project size using PHPLOC">
+        <exec executable="./vendor/bin/phploc">
+            <arg value="--log-csv" />
+            <arg value="${basedir}/build/logs/phploc.csv" />
+            <arg path="${basedir}/library" />
+        </exec>
+    </target>
+
     <target name="phpunit" depends="prepare">
         <exec dir="${basedir}" executable="./vendor/bin/phpunit" failonerror="true">
         </exec>
@@ -53,6 +61,6 @@
         </exec>
     </target>
 
-    <target name="build" depends="clean,prepare,phpcs,phpmd,phpcpd,pdepend,phpunit,phpdoc"/>
+    <target name="build" depends="clean,prepare,phpcs,phpmd,phpcpd,pdepend,phploc,phpunit,phpdoc"/>
 
 </project>
