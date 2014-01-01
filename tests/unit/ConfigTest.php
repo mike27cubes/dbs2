@@ -5,14 +5,14 @@
  *
  * PHP version 5.3
  *
- * @vendor     27Cubes
+ * @vendor     27 Cubes
  * @package    DbSmart2
- * @subpackage DmSmart2Test
+ * @subpackage DbSmart2Tests
  * @author     27 Cubes <info@27cubes.net>
  * @since      %NEXT_VERSION%
  */
 
-namespace Cubes\DbSmart2;
+namespace Cubes\DbSmart2Tests;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
 {

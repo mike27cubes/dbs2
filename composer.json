@@ -9,9 +9,23 @@
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*"
     },
-    "autoload": {
-        "psr-4": {
-            "Cubes\\DbSmart2\\": "library/"
+    "authors": [
+        {
+            "name": "Mike Hickey",
+            "email": "info@27cubes.com",
+            "homepage": "http://www.27cubes.com",
+            "role": "Developer"
         }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Cubes\\DbSmart2\\": "library/",
+            "Cubes\\DbSmart2Tests\\": "tests/unit/"
+        },
+        "psr-4": {
+            "Cubes\\DbSmart2\\": "library/",
+            "Cubes\\DbSmart2Tests\\": "tests/unit/"
+        },
+        "classmap": ["library/"]
     }
 }

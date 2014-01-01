@@ -5,17 +5,24 @@
  *
  * PHP version 5.3
  *
- * @vendor     27Cubes
+ * @vendor     27 Cubes
  * @package    DbSmart2
- * @subpackage DmSmart2Test
+ * @subpackage DbSmart2Tests
  * @author     27 Cubes <info@27cubes.net>
  * @since      %NEXT_VERSION%
  */
 
-namespace Cubes\DbSmart2;
+namespace Cubes\DbSmart2Tests;
 
 class UpgradeFileLoaderTest extends \PHPUnit_Framework_TestCase
 {
+    protected $dataDir;
+
+    public function setup()
+    {
+        $this->dataDir = dirname(__DIR__) . '/data';
+    }
+
     /**
      * Useless test to start out
      */
@@ -27,7 +34,7 @@ class UpgradeFileLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadFile()
     {
-        $obj = \Cubes\DbSmart2\UpgradeFileLoader();
+        $obj = new \Cubes\DbSmart2\UpgradeFileLoader();
         $file = $this->dataDir . '/individual/singlequery.sql';
         $test = $obj->loadFile($file);
         $expected = new \Cubes\DbSmart2\QueryList(array(
@@ -38,9 +45,19 @@ class UpgradeFileLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $test, $file);
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testLoadFile_FileNotExists()
+    {
+        $obj = new \Cubes\DbSmart2\UpgradeFileLoader();
+        $file = $this->dataDir . '/individual/non-existant-file.sql';
+        $obj->loadFile($file);
+    }
+
     public function testLoadFiles()
     {
-        $obj = \Cubes\DbSmart2\UpgradeFileLoader();
+        $obj = new \Cubes\DbSmart2\UpgradeFileLoader();
         $files = array(
             $this->dataDir . '/individual/singlequery.sql',
             $this->dataDir . '/individual/manyqueries1.sql'
