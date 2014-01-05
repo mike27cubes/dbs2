@@ -9,5 +9,5 @@ Goals
  - determine what revisions need to be executed
  - execute revisions & update tracker
  - built in cli script
- - configuration loaded from ini/json/xml file
+ - ~~configuration loaded from json file~~
  - custom configuration plugins?
