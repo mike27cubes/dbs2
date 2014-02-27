@@ -79,6 +79,17 @@ class Runner
         return true;
     }
 
+    protected function logExecutedSchemaId($querySetId, $queryId, $queryBlock)
+    {
+        $sql = 'INSERT INTO DbSmart2 (schema_id, schema_md5) VALUES(?, ?)';
+        $db = $this->getDb();
+        $stmt = $db->prepare($sql);
+        if ($stmt === false) {
+            return false;
+        }
+        return $stmt->execute(array($querySetId . '.' . $queryId, md5(trim($queryBlock))));
+    }
+
     protected function splitUpQueryBlock($queryBlock)
     {
         $queries = explode("\n", trim($queryBlock));
