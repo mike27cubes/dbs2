@@ -1,5 +1,5 @@
 {
-    "name":"27Cubes/dbs2",
+    "name":"27cubes/dbs2",
     "description":"DBS2",
     "type":"library",
     "license": "proprietary",
@@ -32,5 +32,6 @@
             "Cubes\\DbSmart2Tests\\": "tests/unit/"
         },
         "classmap": ["library/"]
-    }
+    },
+    "bin": ["bin/dbsmart"]
 }
