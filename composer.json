@@ -1,8 +1,9 @@
 {
-    "name":"27Cubes/dbs2",
-    "description":"DBS2",
+    "name":"27cubes/dbsmart2",
+    "description":"DBSMART 2",
+    "homepage": "https://github.com/mike27cubes/dbs2",
     "type":"library",
-    "license": "proprietary",
+    "license": "WTFPL",
     "require": {
         "php": ">=5.3.3"
     },
@@ -23,10 +24,6 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Cubes\\DbSmart2\\": "library/",
-            "Cubes\\DbSmart2Tests\\": "tests/unit/"
-        },
         "psr-4": {
             "Cubes\\DbSmart2\\": "library/",
             "Cubes\\DbSmart2Tests\\": "tests/unit/"
