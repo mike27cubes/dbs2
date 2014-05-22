@@ -3,14 +3,14 @@ dbs2
 
 Goals
 
- - ~~read upgrade files from configured directory~~
- - ~~sort files into x.y.z release number order~~
- - ~~break upgrade file contents into XX.YY schema revisions~~
- - ~~determine what revisions need to be executed~~
- - ~~execute revisions & update tracker~~
+ - [x] read upgrade files from configured directory
+ - [x] sort files into x.y.z release number order
+ - [x] break upgrade file contents into XX.YY schema revisions
+ - [x] determine what revisions need to be executed
+ - [x] execute revisions & update tracker
  - built in cli script
- - ~~configuration loaded from json file~~
- - custom configuration plugins?
+ - [x] configuration loaded from json file
+ - [x] custom configuration via script
 
 TODO
  - [ ] Switch to a specific CliRunner class
