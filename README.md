@@ -11,6 +11,7 @@ Goals
  - [ ] built in cli script
  - [x] configuration loaded from json file
  - [x] custom configuration via script
+ - [ ] Documentation
 
 TODO
  - [ ] Switch to a specific CliRunner class
