@@ -98,8 +98,12 @@ class QueryList
      */
     public function filterOutQueries($idsToRemove = array())
     {
+        // Remove values that don't match the DBSmart Schema Id pattern
+        $idsToRemove = array_filter($idsToRemove, function($v) {
+            return strpos($v, '.') !== false;
+        });
         foreach ($idsToRemove as $schemaId) {
-            list($xx, $yy) = explode(',', $schemaId, 2);
+            list($xx, $yy) = explode('.', $schemaId, 2);
             if (isset($this->queries[$xx][$yy])) {
                 unset($this->queries[$xx][$yy]);
             }

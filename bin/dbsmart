@@ -2,19 +2,19 @@
 <?php
 
 $files = array(
-    __DIR__ . '/../../vendor/autoload.php',
-    __DIR__ . '/../../../../autoload.php'
+    __DIR__ . '/../../../../vendor/autoload.php'
 );
 
+$projectRoot = null;
 foreach ($files as $file) {
     if (file_exists($file)) {
         require $file;
-        define('DBSMART_COMPOSER_INSTALL', $file);
+        $projectRoot = dirname(dirname(realpath($file)));
         break;
     }
 }
 
-if (!defined('DBSMART_COMPOSER_INSTALL')) {
+if (empty($projectRoot)) {
     die(
       'You need to set up the project dependencies using the following commands:' . PHP_EOL .
       'curl -s http://getcomposer.org/installer | php' . PHP_EOL .
@@ -23,3 +23,5 @@ if (!defined('DBSMART_COMPOSER_INSTALL')) {
 }
 
 // Run DBSmart2 CLI Runner
+$runner = new \Cubes\DbSmart2\Runner();
+$runner->autorun($projectRoot);

@@ -91,4 +91,20 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['password'], $obj->getPassword());
         $this->assertEquals(str_replace('__DIR__', dirname($filepath), $expected['upgrade_path']), $obj->getUpgradePath());
     }
+
+    public function testLoadFromJsonFile_CustomConfig()
+    {
+        $obj = new \Cubes\DbSmart2\Config();
+        $configroot = dirname(__DIR__) . '/data/';
+        $configdata = $configroot . 'test-config.json';
+        $configfile = $configroot . 'test-config-customloader.json';
+        $retVal = $obj->loadFromJsonFile($configfile);
+        $this->assertEquals($obj, $retVal);
+        $expected = json_decode(trim(file_get_contents($configdata)), true);
+        $this->assertEquals($expected['dsn'], $obj->getDsn());
+        $this->assertEquals($expected['username'], $obj->getUsername());
+        $this->assertEquals($expected['password'], $obj->getPassword());
+        // Note: Now replacements done on custom loaded config data
+        $this->assertEquals($expected['upgrade_path'], $obj->getUpgradePath());
+    }
 }

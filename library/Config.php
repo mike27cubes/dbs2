@@ -81,6 +81,9 @@ class Config
      */
     public function loadConfig($details = array())
     {
+        if (!empty($details['customconfig'])) {
+            return $this->loadCustomConfig($details['customconfig']);
+        }
         $map = array(
             'dsn' => 'dsn',
             'username' => 'username',
@@ -93,6 +96,19 @@ class Config
             }
         }
         return $this;
+    }
+
+    /**
+     * Loads config via a custom script
+     *
+     * Script must return an array of data readable by Config::loadConfig()
+     *
+     * @param  string $configscript path to custom configuration script
+     * @return Config fluent interface
+     */
+    protected function loadCustomConfig($configscript)
+    {
+        return $this->loadConfig(require $configscript);
     }
 
     /**

@@ -14,6 +14,15 @@ class Runner
      */
     protected $db;
 
+    public function autorun($projectRoot)
+    {
+        /*
+         * 1. Look for config
+         * 2. Load Config
+         * 3. Run
+         */
+    }
+
     /**
      * Sets the config
      *
