@@ -53,6 +53,22 @@ class QueryList
     }
 
     /**
+     * Gets the schema ids
+     *
+     * @return array
+     */
+    public function getSchemaIds()
+    {
+        $ids = array();
+        foreach ($this->queries as $xx => $grouped) {
+            foreach ($grouped as $yy => $ignored) {
+                $ids[] = $xx . '.' . $yy;
+            }
+        }
+        return $ids;
+    }
+
+    /**
      * Joins the given query list into
      *
      * @param  QueryList $toJoin
@@ -70,6 +86,26 @@ class QueryList
                 }
                 $this->queries[$xx][$yy] = trim($this->queries[$xx][$yy] . "\n" . $queryBlock);
             }
+        }
+        return $this;
+    }
+
+    /**
+     * Filters out queries
+     *
+     * @param  array $idsToRemove
+     * @return QueryList
+     */
+    public function filterOutQueries($idsToRemove = array())
+    {
+        foreach ($idsToRemove as $schemaId) {
+            list($xx, $yy) = explode(',', $schemaId, 2);
+            if (isset($this->queries[$xx][$yy])) {
+                unset($this->queries[$xx][$yy]);
+            }
+        }
+        foreach (array_keys($this->queries) as $xx) {
+            $this->queries[$xx] = array_filter($this->queries[$xx]);
         }
         return $this;
     }

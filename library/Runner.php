@@ -10,6 +10,11 @@ class Runner
     protected $config;
 
     /**
+     * @var \PDO
+     */
+    protected $db;
+
+    /**
      * Sets the config
      *
      * @param  Config $config
@@ -32,50 +37,101 @@ class Runner
         if (!($this->config instanceof Config)) {
             throw new \RuntimeException('Config not loaded');
         }
+        $lister = new UpgradeFileLister();
         $loader = new UpgradeFileLoader();
-        return $loader->loadFiles(glob($this->config->getUpgradePath() . '/*.sql'));
+        return $loader->loadFiles($lister->getFileList($this->config));
     }
 
-    public function getFileList()
+    public function getNewSchemaIds()
     {
+        $queries = $this->getQueryList();
+        $queries->filterOutQueries($this->getExecutedSchemaIds());
+        return $queries->getSchemaIds();
+    }
+
+    public function run()
+    {
+        $queries = $this->getQueryList();
+        $queries->filterOutQueries($this->getExecutedSchemaIds());
+        $db = $this->getDb();
+        foreach ($queries->getQueries() as $querySetId => $querySet) {
+            foreach ($querySet as $queryId => $queryBlock) {
+                // TODO: Start transaction
+                $queries = $this->splitUpQueryBlock($queryBlock);
+                foreach ($queries as $query) {
+                    $stmt = $db->prepare($query);
+                    if ($stmt === false) {
+                        // TODO: ROLLBACK
+                        throw new \RuntimeException('Could not run query: ' . join(' - ', $db->errorInfo()));
+                    }
+                    if (!$stmt->execute()) {
+                        // TODO: ROLLBACK
+                        throw new \RuntimeException('Could not run query: ' . join(' - ', $stmt->errorInfo()));
+                    }
+                }
+                if (!$this->logExecutedSchemaId($querySetId, $queryId, $queryBlock)) {
+                    // TODO: ROLLBACK
+                    throw new \RuntimeException('Could not update schema id log');
+                }
+                // TODO: Commit
+            }
+        }
+        return true;
+    }
+
+    protected function logExecutedSchemaId($querySetId, $queryId, $queryBlock)
+    {
+        $sql = 'INSERT INTO DbSmart2 (schema_id, schema_md5) VALUES(?, ?)';
+        $db = $this->getDb();
+        $stmt = $db->prepare($sql);
+        if ($stmt === false) {
+            return false;
+        }
+        return $stmt->execute(array($querySetId . '.' . $queryId, md5(trim($queryBlock))));
+    }
+
+    protected function splitUpQueryBlock($queryBlock)
+    {
+        $queries = explode("\n", trim($queryBlock));
+        foreach ($queries as $k => $v) {
+            $queries[$k] = rtrim($v);
+        }
+        $queryBlock = join("\n", $queries);
+        return explode("\n;", $queryBlock);
+    }
+
+    protected function getExecutedSchemaIds()
+    {
+        $db = $this->getDb();
+        $stmt = $db->prepare('SELECT schema_id FROM DbSmart2 ORDER BY schema_id ASC');
+        if ($stmt === false) {
+            throw new \RuntimeException('Could not poll executed schema ids: ' . join(' - ', $db->errorInfo()));
+        }
+        if (!$stmt->execute()) {
+            throw new \RuntimeException('Could not poll executed schema ids: ' . join(' - ', $stmt->errorInfo()));
+        }
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Gets the Datbase Connection
+     *
+     * @return \PDO
+     * @throws \RuntimeException, \PDOException
+     */
+    public function getDb()
+    {
+        if ($this->db instanceof \PDO) {
+            return $this->db;
+        }
         if (!($this->config instanceof Config)) {
             throw new \RuntimeException('Config not loaded');
         }
-        $files = array_unique(glob($this->config->getUpgradePath() . '/*.sql'));
-        $files = array_filter($files, array($this, 'excludeJunkFilesFromFileList'));
-        usort($files, array($this, 'upgradeFileSortComparison'));
-        return $files;
-    }
-
-    public function excludeJunkFilesFromFileList($file)
-    {
-        $name = trim(substr($file, strrpos($file, '/')), '/');
-        if ($name == 'branch-upgrade.sql' || preg_match('/upgrade-([0-9]+)_([0-9]+)_([0-9]+).sql/', $name)) {
-            return true;
+        try {
+            $db = new \PDO($this->config->getDsn(), $this->config->getUsername(), $this->config->getPassword(), array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+        } catch (\PDOException $e) {
         }
-        return false;
-    }
-
-    public function upgradeFileSortComparison($a, $b)
-    {
-        $aName = trim(substr($a, strrpos($a, '/')), '/');
-        $bName = trim(substr($b, strrpos($b, '/')), '/');
-        if ($aName == 'branch-upgrade.sql') {
-            return 1;
-        } elseif ($bName == 'branch-upgrade.sql') {
-            return -1;
-        }
-        $aVersion = trim(substr($aName, strrpos($aName, '-')), '-');
-        $aVersion = array_pad(explode('_', trim(substr($aVersion, 0, strpos($aVersion, '.')), '.')), -3, 0);
-        $bVersion = trim(substr($bName, strrpos($bName, '-')), '-');
-        $bVersion = array_pad(explode('_', trim(substr($bVersion, 0, strpos($bVersion, '.')), '.')), -3, 0);
-        for ($i = 0; $i < 3; $i++) {
-            if ((int) $aVersion[$i] > (int) $bVersion[$i]) {
-                return 1;
-            } elseif ((int) $aVersion[$i] < (int) $bVersion[$i]) {
-                return -1;
-            }
-        }
-        return 0;
+        $this->db = $db;
+        return $this->db;
     }
 }

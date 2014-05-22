@@ -29,5 +29,6 @@
             "Cubes\\DbSmart2Tests\\": "tests/unit/"
         },
         "classmap": ["library/"]
-    }
+    },
+    "bin": ["bin/dbsmart"]
 }
