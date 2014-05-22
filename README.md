@@ -8,7 +8,7 @@ Goals
  - [x] break upgrade file contents into XX.YY schema revisions
  - [x] determine what revisions need to be executed
  - [x] execute revisions & update tracker
- - built in cli script
+ - [ ] built in cli script
  - [x] configuration loaded from json file
  - [x] custom configuration via script
 
