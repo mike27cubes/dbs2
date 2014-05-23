@@ -1,0 +1,6 @@
+{
+    "dsn": "mysql:dbname=example;host=127.0.0.1",
+    "username": "djLanceRock",
+    "password": "listeningAndDancingToMusicIsAwesome",
+    "upgrade_path": "__DIR__/sql/"
+}

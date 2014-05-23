@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * DbSmart2 Runner
+ *
+ * PHP version 5.3
+ *
+ * @vendor     27 Cubes
+ * @package    DbSmart2
+ * @author     27 Cubes <info@27cubes.net>
+ * @since      %NEXT_VERSION%
+ */
+
 namespace Cubes\DbSmart2;
 
 class Runner
@@ -20,6 +31,7 @@ class Runner
     const COMMAND_CONNECTIONTEST = 'connectiontest';
     const COMMAND_TABLETEST = 'tabletest';
     const COMMAND_DUMPLOG = 'dumplog';
+    const COMMAND_NULL = 'null';
 
     /**
      * Sets the config
@@ -85,6 +97,19 @@ class Runner
     protected function runDumplog($options = array())
     {
         throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    /**
+     * Null Command
+     *
+     * For Testing Purposes only
+     *
+     * @param  array $options
+     * @return string
+     */
+    protected function runNull($options = array())
+    {
+        return trim('NULL ' . json_encode($options));
     }
 
     public function runUpgrade($options = array())
@@ -197,7 +222,8 @@ class Runner
             self::COMMAND_DOWNGRADE,
             self::COMMAND_CONNECTIONTEST,
             self::COMMAND_TABLETEST,
-            self::COMMAND_DUMPLOG
+            self::COMMAND_DUMPLOG,
+            self::COMMAND_NULL
         );
     }
 }

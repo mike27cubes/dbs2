@@ -40,6 +40,11 @@ if (count($args) > 0) {
 }
 $commandOptions = $args;
 
-set_exception_handler(array('\\Cubes\\DbSmart2\\CliRunner', 'exceptionHandler'));
+set_exception_handler(function($e) {
+    fwrite(STDERR, 'DBSmart2 Failure - ' . get_class($e) . "\n" . $e->getMessage() . "\n\n");
+    $runner = new \Cubes\DbSmart2\CliRunner();
+    $runner->runHelp();
+    exit(1);
+});
 $runner = new \Cubes\DbSmart2\CliRunner($cliParameters);
 $runner->run($projectRoot, $command, $commandOptions);
