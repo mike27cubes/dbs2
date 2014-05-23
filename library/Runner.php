@@ -14,14 +14,12 @@ class Runner
      */
     protected $db;
 
-    public function autorun($projectRoot)
-    {
-        /*
-         * 1. Look for config
-         * 2. Load Config
-         * 3. Run
-         */
-    }
+    const COMMAND_REVISIONCHECK = 'revisioncheck';
+    const COMMAND_UPGRADE = 'upgrade';
+    const COMMAND_DOWNGRADE = 'downgrade';
+    const COMMAND_CONNECTIONTEST = 'connectiontest';
+    const COMMAND_TABLETEST = 'tabletest';
+    const COMMAND_DUMPLOG = 'dumplog';
 
     /**
      * Sets the config
@@ -58,7 +56,38 @@ class Runner
         return $queries->getSchemaIds();
     }
 
-    public function run()
+    public function run($command, $options = array())
+    {
+        $runMethod = 'run' . ucfirst($command);
+        return call_user_func(array($this, $runMethod), $options);
+    }
+
+    protected function runRevisioncheck($options = array())
+    {
+        throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    protected function runDowngrade($options = array())
+    {
+        throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    protected function runConnectiontest($options = array())
+    {
+        throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    protected function runTabletest($options = array())
+    {
+        throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    protected function runDumplog($options = array())
+    {
+        throw new \RuntimeException(__METHOD__ . ' not implemented');
+    }
+
+    public function runUpgrade($options = array())
     {
         $queries = $this->getQueryList();
         $queries->filterOutQueries($this->getExecutedSchemaIds());
@@ -142,5 +171,33 @@ class Runner
         }
         $this->db = $db;
         return $this->db;
+    }
+
+    /**
+     * Validates the given command
+     *
+     * @param  string $toTest
+     * @return bool
+     */
+    public function validateCommand($toTest)
+    {
+        return in_array($toTest, self::getCommandList());
+    }
+
+    /**
+     * Gets a list ov valid commands
+     *
+     * @return array
+     */
+    public static function getCommandList()
+    {
+        return array(
+            self::COMMAND_REVISIONCHECK,
+            self::COMMAND_UPGRADE,
+            self::COMMAND_DOWNGRADE,
+            self::COMMAND_CONNECTIONTEST,
+            self::COMMAND_TABLETEST,
+            self::COMMAND_DUMPLOG
+        );
     }
 }

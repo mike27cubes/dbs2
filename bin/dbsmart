@@ -2,7 +2,8 @@
 <?php
 
 $files = array(
-    __DIR__ . '/../../../../vendor/autoload.php'
+    __DIR__ . '/../../../../vendor/autoload.php',
+    __DIR__ . '/../vendor/autoload.php'
 );
 
 $projectRoot = null;
@@ -22,6 +23,23 @@ if (empty($projectRoot)) {
     );
 }
 
-// Run DBSmart2 CLI Runner
-$runner = new \Cubes\DbSmart2\Runner();
-$runner->autorun($projectRoot);
+$shortParams = array('v', 'V', 'h', 'q');
+$cliParameters = getopt(join($shortParams), array('max-script-instance:'));
+foreach ($cliParameters as $k => $v) {
+    if (in_array($k, $shortParams)) {
+        $cliParameters[$k] = true;
+    }
+}
+$args = array_filter($argv, function($v) {
+    return substr($v, 0, 1) != '-'; // remove switches
+});
+array_shift($args); // remove script name
+$command = null;
+if (count($args) > 0) {
+    $command = array_shift($args);
+}
+$commandOptions = $args;
+
+set_exception_handler(array('\\Cubes\\DbSmart2\\CliRunner', 'exceptionHandler'));
+$runner = new \Cubes\DbSmart2\CliRunner($cliParameters);
+$runner->run($projectRoot, $command, $commandOptions);
