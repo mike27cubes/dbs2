@@ -70,7 +70,7 @@ class UpgradeFileLoader
         $contents = array_filter(array_map('trim', $contents));
         foreach ($contents as $line) {
             $matches = array();
-            if (!$inQueryBlock && preg_match('/^-- ?\{\{\{ ([a-zA-Z0-9]+)\.([a-zA-Z0-9]+)$/', $line, $matches)) {
+            if (!$inQueryBlock && preg_match('/^-- ?\{\{\{ ([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)$/', $line, $matches)) {
                 $inQueryBlock = true;
                 $curXxKey = $matches[1];
                 $curYyKey = $matches[2];

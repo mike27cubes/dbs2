@@ -76,6 +76,7 @@ Commands
   tabletest      - Test for the existence of the DBSMART tracker table.
                    Automatically executed by revisioncheck, upgrade,
                    setuptracker, and dumplog commands.
+  createtable    - Create the tracker table.
   dumplog        - Dump the contents of the DBSMART tracker table.
 
 Proposed Commands
@@ -119,6 +120,7 @@ Commands
   tabletest      - Test for the existence of the DBSMART tracker table.
                    Automatically executed by revisioncheck, upgrade,
                    setuptracker, and dumplog commands.
+  createtable    - Create the tracker table.
   dumplog        - Dump the contents of the DBSMART tracker table.
 
 Proposed Commands

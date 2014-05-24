@@ -30,8 +30,11 @@ class Runner
     const COMMAND_DOWNGRADE = 'downgrade';
     const COMMAND_CONNECTIONTEST = 'connectiontest';
     const COMMAND_TABLETEST = 'tabletest';
+    const COMMAND_SETUPTRACKER = 'setuptracker';
     const COMMAND_DUMPLOG = 'dumplog';
     const COMMAND_NULL = 'null';
+
+    const TRACKER_TABLE = 'DbSmart2';
 
     /**
      * Sets the config
@@ -76,7 +79,12 @@ class Runner
 
     protected function runRevisioncheck($options = array())
     {
-        throw new \RuntimeException(__METHOD__ . ' not implemented');
+        $new = $this->getNewSchemaIds();
+        if (count($new) > 0) {
+            return 'Revisions to run' . "\n\n" . join("\n", $new) . "\n";
+        } else {
+            return 'Up To Date';
+        }
     }
 
     protected function runDowngrade($options = array())
@@ -86,12 +94,35 @@ class Runner
 
     protected function runConnectiontest($options = array())
     {
-        throw new \RuntimeException(__METHOD__ . ' not implemented');
+        $db = $this->getDb();
+        return 'Connection Test Passed';
     }
 
     protected function runTabletest($options = array())
     {
-        throw new \RuntimeException(__METHOD__ . ' not implemented');
+        $db = $this->getDb();
+        $sql = 'SHOW CREATE TABLE ' . self::TRACKER_TABLE;
+        foreach ($db->query($sql) as $row) {
+            if (!empty($row)) {
+                return 'Tracker Table exists';
+            }
+        }
+        throw new \RuntimeException('Tracker Table does not exist');
+        exit;
+    }
+
+    protected function runSetuptracker($options = array())
+    {
+        $db = $this->getDb();
+        $sql = 'CREATE TABLE ' . self::TRACKER_TABLE . ' (
+            schema_id VARCHAR ( 16 ) NOT NULL ,
+            schema_md5 VARCHAR ( 32 ) NOT NULL ,
+            schema_date DATE NOT NULL ,
+            schema_time TIME NOT NULL ,
+            PRIMARY KEY ( schema_id ) ,
+            INDEX ( schema_md5 )
+        ) ENGINE=InnoDb DEFAULT CHARSET=UTF8';
+        return $db->exec($sql) ? 'Table Created' : 'Table creation failed';
     }
 
     protected function runDumplog($options = array())
@@ -190,10 +221,7 @@ class Runner
         if (!($this->config instanceof Config)) {
             throw new \RuntimeException('Config not loaded');
         }
-        try {
-            $db = new \PDO($this->config->getDsn(), $this->config->getUsername(), $this->config->getPassword(), array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-        } catch (\PDOException $e) {
-        }
+        $db = new \PDO($this->config->getDsn(), $this->config->getUsername(), $this->config->getPassword(), array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         $this->db = $db;
         return $this->db;
     }
@@ -222,6 +250,7 @@ class Runner
             self::COMMAND_DOWNGRADE,
             self::COMMAND_CONNECTIONTEST,
             self::COMMAND_TABLETEST,
+            self::COMMAND_SETUPTRACKER,
             self::COMMAND_DUMPLOG,
             self::COMMAND_NULL
         );
