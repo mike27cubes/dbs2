@@ -99,11 +99,11 @@ class Runner
      */
     protected function runRevisioncheck($options = array(), Response $response)
     {
-        $resposne = $this->runConnectiontest($options, $response);
+        $response = $this->runConnectiontest($options, $response);
         if ($response->hasFailures()) {
             return $response;
         }
-        $resposne = $this->runTabletest($options, $response);
+        $response = $this->runTabletest($options, $response);
         if ($response->hasFailures()) {
             return $response;
         }
@@ -198,10 +198,11 @@ class Runner
             PRIMARY KEY ( schema_id ) ,
             INDEX ( schema_md5 )
         ) ENGINE=InnoDb DEFAULT CHARSET=UTF8';
-        if ($db->exec($sql)) {
+        try {
+            $db->exec($sql);
             $response->addResult(self::COMMAND_SETUPTRACKER, true, 'Tracker Table Created');
-        } else {
-            $response->addResult(self::COMMAND_SETUPTRACKER, false, 'Tracker Table creation failed: ' . join(' - ', $db->errorInfo()));
+        } catch (\PDOException $e) {
+            $response->addResult(self::COMMAND_SETUPTRACKER, false, 'Tracker Table creation failed: ' . $e->getMessage());
         }
         return $response;
     }
