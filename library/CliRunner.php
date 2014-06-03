@@ -81,7 +81,8 @@ class CliRunner
             foreach ($response->getResults() as $result) {
                 echo $result['message'] . "\n";
             }
-        } elseif ($this->quiet()) {
+        } else {
+            // Assumed quiet
             $failures = array();
             if ($response->hasFailures()) {
                 foreach ($response->getResults() as $result) {
