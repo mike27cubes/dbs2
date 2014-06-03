@@ -185,6 +185,10 @@ class Runner
      */
     protected function runSetuptracker($options = array(), Response $response)
     {
+        $resposne = $this->runConnectiontest($options, $response);
+        if ($response->hasFailures()) {
+            return $response;
+        }
         $db = $this->getDb();
         $sql = 'CREATE TABLE ' . self::TRACKER_TABLE . ' (
             schema_id VARCHAR ( 16 ) NOT NULL ,
@@ -197,7 +201,7 @@ class Runner
         if ($db->exec($sql)) {
             $response->addResult(self::COMMAND_SETUPTRACKER, true, 'Tracker Table Created');
         } else {
-            $response->addResult(self::COMMAND_SETUPTRACKER, false, 'Tracker Table creation failed');
+            $response->addResult(self::COMMAND_SETUPTRACKER, false, 'Tracker Table creation failed: ' . join(' - ', $db->errorInfo()));
         }
         return $response;
     }
