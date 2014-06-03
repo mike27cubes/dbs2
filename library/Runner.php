@@ -64,6 +64,11 @@ class Runner
         return $loader->loadFiles($lister->getFileList($this->config));
     }
 
+    /**
+     * Gets a list of the "new" schema ids
+     *
+     * @return array
+     */
     public function getNewSchemaIds()
     {
         $queries = $this->getQueryList();
@@ -71,47 +76,102 @@ class Runner
         return $queries->getSchemaIds();
     }
 
+    /**
+     * Runs the given command
+     *
+     * @param  string $command the command to run
+     * @param  array  $options
+     * @return Response
+     */
     public function run($command, $options = array())
     {
         $runMethod = 'run' . ucfirst($command);
-        return call_user_func(array($this, $runMethod), $options);
+        $response = new Response();
+        return call_user_func(array($this, $runMethod), $options, $response);
     }
 
-    protected function runRevisioncheck($options = array())
+    /**
+     * Run Revision Check
+     *
+     * @param  array    $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runRevisioncheck($options = array(), Response $response)
     {
         $new = $this->getNewSchemaIds();
         if (count($new) > 0) {
-            return 'Revisions to run' . "\n\n" . join("\n", $new) . "\n";
+            $response->addResult(self::COMMAND_REVISIONCHECK, false, 'Revisions to run' . "\n\n" . join("\n", $new) . "\n");
         } else {
-            return 'Up To Date';
+            $response->addResult(self::COMMAND_REVISIONCHECK, true, 'Up To Date');
         }
+        return $response;
     }
 
-    protected function runDowngrade($options = array())
+    /**
+     * Run Downgrade
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runDowngrade($options = array(), Response $response)
     {
         throw new \RuntimeException(__METHOD__ . ' not implemented');
     }
 
-    protected function runConnectiontest($options = array())
+    /**
+     * Run Connection Test
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runConnectiontest($options = array(), Response $response)
     {
-        $db = $this->getDb();
-        return 'Connection Test Passed';
+        try {
+            $db = $this->getDb();
+            $response->addResult(self::COMMAND_CONNECTIONTEST, true, 'Connection Test Passed');
+        } catch (\Exception $e) {
+            $response->addResult(self::COMMAND_CONNECTIONTEST, false, $e->getMessage());
+        }
+        return $response;
     }
 
-    protected function runTabletest($options = array())
+    /**
+     * Run Table Test
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runTabletest($options = array(), Response $response)
     {
         $db = $this->getDb();
         $sql = 'SHOW CREATE TABLE ' . self::TRACKER_TABLE;
+        $exists = false;
         foreach ($db->query($sql) as $row) {
             if (!empty($row)) {
+                $exists = true;
                 return 'Tracker Table exists';
             }
         }
-        throw new \RuntimeException('Tracker Table does not exist');
-        exit;
+        if ($exists) {
+            $response->addResult(self::COMMAND_TABLETEST, true, 'Tracker Table exists');
+        } else {
+            $response->addResult(self::COMMAND_TABLETEST, false, 'Tracker Table does not exist');
+        }
+        return $response;
     }
 
-    protected function runSetuptracker($options = array())
+    /**
+     * Run Setup Tracker
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runSetuptracker($options = array(), Response $response)
     {
         $db = $this->getDb();
         $sql = 'CREATE TABLE ' . self::TRACKER_TABLE . ' (
@@ -122,28 +182,48 @@ class Runner
             PRIMARY KEY ( schema_id ) ,
             INDEX ( schema_md5 )
         ) ENGINE=InnoDb DEFAULT CHARSET=UTF8';
-        return $db->exec($sql) ? 'Table Created' : 'Table creation failed';
+        if ($db->exec($sql)) {
+            $response->addResult(self::COMMAND_SETUPTRACKER, true, 'Tracker Table Created');
+        } else {
+            $response->addResult(self::COMMAND_SETUPTRACKER, false, 'Tracker Table creation failed');
+        }
+        return $response;
     }
 
-    protected function runDumplog($options = array())
+    /**
+     * Run Dump Log
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    protected function runDumplog($options = array(), Response $response)
     {
         throw new \RuntimeException(__METHOD__ . ' not implemented');
     }
 
     /**
-     * Null Command
+     * Run Null Command
      *
      * For Testing Purposes only
      *
      * @param  array $options
-     * @return string
+     * @param  Response $response
+     * @return Response
      */
-    protected function runNull($options = array())
+    protected function runNull($options = array(), Response $response)
     {
-        return trim('NULL ' . json_encode($options));
+        return $response->addResult(self::COMMAND_NULL, true, trim('NULL ' . json_encode($options)));
     }
 
-    public function runUpgrade($options = array())
+    /**
+     * Run Upgrade
+     *
+     * @param  array $options
+     * @param  Response $response
+     * @return Response
+     */
+    public function runUpgrade($options = array(), Response $response)
     {
         $queries = $this->getQueryList();
         $queries->filterOutQueries($this->getExecutedSchemaIds());
@@ -151,28 +231,36 @@ class Runner
         foreach ($queries->getQueries() as $querySetId => $querySet) {
             foreach ($querySet as $queryId => $queryBlock) {
                 // TODO: Start transaction
-                $queries = $this->splitUpQueryBlock($queryBlock);
-                foreach ($queries as $query) {
+                $splitQueries = $this->splitUpQueryBlock($queryBlock);
+                foreach ($splitQueries as $query) {
                     $stmt = $db->prepare($query);
                     if ($stmt === false) {
                         // TODO: ROLLBACK
-                        throw new \RuntimeException('Could not run query: ' . join(' - ', $db->errorInfo()));
+                        return $response->addResult(self::COMMAND_UPGRADE, false, 'Could not prepare query: ' . join(' - ', $db->errorInfo()));
                     }
                     if (!$stmt->execute()) {
                         // TODO: ROLLBACK
-                        throw new \RuntimeException('Could not run query: ' . join(' - ', $stmt->errorInfo()));
+                        return $response->addResult(self::COMMAND_UPGRADE, false, 'Could not execute query: ' . join(' - ', $stmt->errorInfo()));
                     }
                 }
                 if (!$this->logExecutedSchemaId($querySetId, $queryId, $queryBlock)) {
                     // TODO: ROLLBACK
-                    throw new \RuntimeException('Could not update schema id log');
+                    return $response->addResult(self::COMMAND_UPGRADE, false, 'Could not update tracker table');
                 }
                 // TODO: Commit
             }
         }
-        return true;
+        return $response->addResult(self::COMMAND_UPGRADE, true, 'Successfully executed queries' . "\n" . join("\n", $queries->getSchemaIds()));
     }
 
+    /**
+     * Logs the given query-set-id and query-id to the tracker table
+     *
+     * @param  string $querySetId
+     * @param  string $queryId
+     * @param  string $queryBlock
+     * @return bool
+     */
     protected function logExecutedSchemaId($querySetId, $queryId, $queryBlock)
     {
         $sql = 'INSERT INTO DbSmart2 (schema_id, schema_md5) VALUES(?, ?)';
@@ -184,6 +272,12 @@ class Runner
         return $stmt->execute(array($querySetId . '.' . $queryId, md5(trim($queryBlock))));
     }
 
+    /**
+     * Splits up the given query block into a list of executable queries
+     *
+     * @param  string $queryBlock
+     * @return array
+     */
     protected function splitUpQueryBlock($queryBlock)
     {
         $queries = explode("\n", trim($queryBlock));
@@ -194,6 +288,11 @@ class Runner
         return explode("\n;", $queryBlock);
     }
 
+    /**
+     * Gets a list of the executed schema ids
+     *
+     * @return array
+     */
     protected function getExecutedSchemaIds()
     {
         $db = $this->getDb();

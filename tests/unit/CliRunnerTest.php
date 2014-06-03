@@ -76,7 +76,6 @@ Commands
   tabletest      - Test for the existence of the DBSMART tracker table.
                    Automatically executed by revisioncheck, upgrade,
                    setuptracker, and dumplog commands.
-  createtable    - Create the tracker table.
   dumplog        - Dump the contents of the DBSMART tracker table.
 
 Proposed Commands
@@ -85,11 +84,8 @@ Proposed Commands
 
 EOH;
         $runner = new \Cubes\DbSmart2\CliRunner();
-        ob_start();
+        $this->expectOutputString($expected);
         $runner->runHelp();
-        $test = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals($expected, $test);
     }
 
 
@@ -120,7 +116,6 @@ Commands
   tabletest      - Test for the existence of the DBSMART tracker table.
                    Automatically executed by revisioncheck, upgrade,
                    setuptracker, and dumplog commands.
-  createtable    - Create the tracker table.
   dumplog        - Dump the contents of the DBSMART tracker table.
 
 Proposed Commands
@@ -129,19 +124,17 @@ Proposed Commands
 
 EOH;
         $runner = new \Cubes\DbSmart2\CliRunner(array('h' => true));
-        ob_start();
+        $this->expectOutputString($expected);
         $runner->run('', '');
-        $test = ob_get_contents();
-        ob_end_clean();
-        $this->assertEquals($expected, $test);
     }
 
     /**
-     * @expectedException RuntimeException
+     * @expectedException PHPUnit_Framework_Error
      */
     public function testRun_InvalidCommand()
     {
         $runner = new \Cubes\DbSmart2\CliRunner();
+        $this->expectOutputRegex('/.*/');
         $runner->run('', uniqid('Some Invalid Command'));
     }
 
@@ -156,13 +149,10 @@ EOH;
 
     public function testRun_Null()
     {
+        $expected = 'NULL []' . "\n";
         $projectRoot = dirname(__DIR__) . '/data';
         $runner = new \Cubes\DbSmart2\CliRunner();
-        ob_start();
+        $this->expectOutputString($expected);
         $runner->run($projectRoot, \Cubes\DbSmart2\Runner::COMMAND_NULL);
-        $test = ob_get_contents();
-        ob_end_clean();
-        $expected = 'NULL []' . "\n";
-        $this->assertEquals($expected, $test);
     }
 }

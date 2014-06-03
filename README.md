@@ -11,7 +11,7 @@ Goals
  - [x] built in cli script
  - [x] configuration loaded from json file
  - [x] custom configuration via script
- - [ ] Runner actions (tests, updates, downgrades, etc) use response object to track status and messaging
+ - [x] Runner Commands (tests, updates, downgrades, etc) use response object to track status and messaging
  - [ ] Documentation
 
 TODO
@@ -22,7 +22,7 @@ TODO
    - [x] DbSmart2 table test
    - [x] RevisionCheck
    - [x] Run Updates
-   - [x] Run Downgrades
+   - [ ] Run Downgrades
    - [ ] Dump Upgrade Log
  - [x] Runner Class tests database connection
  - [x] Runner Class tests for DbSmart2 table

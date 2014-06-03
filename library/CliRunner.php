@@ -63,7 +63,7 @@ class CliRunner
         $command = strtolower($command);
         $runner = new Runner();
         if (!$runner->validateCommand($command)) {
-            throw new \RuntimeException('Invalid Command "' . $command . '"');
+            return $this->runHelp('Invalid Command "' . $command . '"');
         }
         // Load Config
         $configPath = $projectRoot . '/dbsmart2.json';
@@ -71,12 +71,32 @@ class CliRunner
         $config->loadFromJsonFile($configPath);
         $response = $runner->loadConfig($config)
                            ->run($command, $commandOptions);
-        if ($this->normalOutput() || $this->loudOutput()) {
-            echo $response . "\n";
+        if ($this->loudOutput()) {
+            foreach ($response->getResults() as $result) {
+                echo 'Command: ' . $result['command'] . "\n";
+                echo 'Status: ' . $result['status'] . "\n";
+                echo 'Message: ' . $result['message'] . "\n\n";
+            }
+        } elseif ($this->normalOutput()) {
+            foreach ($response->getResults() as $result) {
+                echo $result['message'] . "\n";
+            }
+        } elseif ($this->quiet()) {
+            $failures = array();
+            foreach ($response->getResults() as $result) {
+                if ($result['status'] === false) {
+                    $failures[] = $result['command'] . ': ' . $result['message'];
+                }
+            }
+            if (count($failures) > 0) {
+                $stdErr = fopen('php://stderr', 'a');
+                fwrite($stdErr, join("\n", $failures));
+                fclose($stdErr);
+            }
         }
     }
 
-    public function runHelp()
+    public function runHelp($error = '')
     {
         echo <<<'EOH'
 DBSMART2
@@ -110,5 +130,8 @@ Proposed Commands
                    revisions
 
 EOH;
+        if (!empty($error) && is_scalar($error)) {
+            trigger_error('DBSMART2 ERROR' . "\n" . $error, E_USER_ERROR);
+        }
     }
 }
