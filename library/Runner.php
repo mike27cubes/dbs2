@@ -162,7 +162,6 @@ class Runner
             foreach ($db->query($sql) as $row) {
                 if (!empty($row)) {
                     $exists = true;
-                    return 'Tracker Table exists';
                 }
             }
             if ($exists) {
