@@ -100,6 +100,9 @@ class Runner
     protected function runRevisioncheck($options = array(), Response $response)
     {
         $resposne = $this->runConnectiontest($options, $response);
+        if ($response->hasFailures()) {
+            return $response;
+        }
         $resposne = $this->runTabletest($options, $response);
         if ($response->hasFailures()) {
             return $response;
@@ -155,16 +158,20 @@ class Runner
         $db = $this->getDb();
         $sql = 'SHOW CREATE TABLE ' . self::TRACKER_TABLE;
         $exists = false;
-        foreach ($db->query($sql) as $row) {
-            if (!empty($row)) {
-                $exists = true;
-                return 'Tracker Table exists';
+        try {
+            foreach ($db->query($sql) as $row) {
+                if (!empty($row)) {
+                    $exists = true;
+                    return 'Tracker Table exists';
+                }
             }
-        }
-        if ($exists) {
-            $response->addResult(self::COMMAND_TABLETEST, true, 'Tracker Table exists');
-        } else {
-            $response->addResult(self::COMMAND_TABLETEST, false, 'Tracker Table does not exist');
+            if ($exists) {
+                $response->addResult(self::COMMAND_TABLETEST, true, 'Tracker Table exists');
+            } else {
+                $response->addResult(self::COMMAND_TABLETEST, false, 'Tracker Table does not exist');
+            }
+        } catch (\PDOException $e) {
+            $response->addResult(self::COMMAND_TABLETEST, false, 'Tracker Table does not exist: ' . $e->getMessage());
         }
         return $response;
     }
