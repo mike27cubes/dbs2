@@ -91,7 +91,7 @@ class CliRunner
                     }
                 }
                 $stdErr = fopen('php://stderr', 'a');
-                fwrite($stdErr, join("\n", $failures));
+                fwrite($stdErr, "\n" . join("\n", $failures) . "\n");
                 fclose($stdErr);
             }
         }
