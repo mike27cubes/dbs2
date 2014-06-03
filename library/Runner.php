@@ -258,6 +258,7 @@ class Runner
                         // TODO: ROLLBACK
                         return $response->addResult(self::COMMAND_UPGRADE, false, 'Could not execute query: ' . join(' - ', $stmt->errorInfo()));
                     }
+                    $stmt->closeCursor();
                 }
                 if (!$this->logExecutedSchemaId($querySetId, $queryId, $queryBlock)) {
                     // TODO: ROLLBACK
