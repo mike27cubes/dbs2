@@ -83,12 +83,12 @@ class CliRunner
             }
         } elseif ($this->quiet()) {
             $failures = array();
-            foreach ($response->getResults() as $result) {
-                if ($result['status'] === false) {
-                    $failures[] = $result['command'] . ': ' . $result['message'];
+            if ($response->hasFailures()) {
+                foreach ($response->getResults() as $result) {
+                    if ($result['status'] === false) {
+                        $failures[] = $result['command'] . ': ' . $result['message'];
+                    }
                 }
-            }
-            if (count($failures) > 0) {
                 $stdErr = fopen('php://stderr', 'a');
                 fwrite($stdErr, join("\n", $failures));
                 fclose($stdErr);

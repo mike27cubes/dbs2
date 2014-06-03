@@ -99,6 +99,11 @@ class Runner
      */
     protected function runRevisioncheck($options = array(), Response $response)
     {
+        $resposne = $this->runConnectiontest($options, $response);
+        $resposne = $this->runTabletest($options, $response);
+        if ($response->hasFailures()) {
+            return $response;
+        }
         $new = $this->getNewSchemaIds();
         if (count($new) > 0) {
             $response->addResult(self::COMMAND_REVISIONCHECK, false, 'Revisions to run' . "\n\n" . join("\n", $new) . "\n");

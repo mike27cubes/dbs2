@@ -34,4 +34,14 @@ class Response
     {
         return $this->results;
     }
+
+    public function hasFailures()
+    {
+        foreach ($this->results as $result) {
+            if ($result['status'] === false) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

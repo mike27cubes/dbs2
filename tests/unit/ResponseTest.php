@@ -33,14 +33,18 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
             array('command' => uniqid('command'), 'status' => rand(0, 1) ? true : false, 'message' => uniqid('message')),
             array('command' => uniqid('command'), 'status' => rand(0, 1) ? true : false, 'message' => uniqid('message')),
             array('command' => uniqid('command'), 'status' => rand(0, 1) ? true : false, 'message' => uniqid('message')),
-            array('command' => uniqid('command'), 'status' => rand(0, 1) ? true : false, 'message' => uniqid('message'))
+            array('command' => uniqid('command'), 'status' => rand(0, 1) ? true : false, 'message' => uniqid('message')),
+            array('command' => uniqid('command'), 'status' => false, 'message' => uniqid('message'))
         );
         $obj = new \Cubes\DbSmart2\Response();
+        $this->assertFalse($obj->hasFailures());
+        $this->assertEquals(array(), $obj->getResults());
         foreach ($input as $row) {
             $retVal = $obj->addResult($row['command'], $row['status'], $row['message']);
             $this->assertInstanceOf('\Cubes\DbSmart2\Response', $retVal);
             $this->assertEquals($obj, $retVal);
         }
         $this->assertEquals($input, $obj->getResults());
+        $this->assertTrue($obj->hasFailures());
     }
 }
