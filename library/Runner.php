@@ -302,7 +302,7 @@ class Runner
             $queries[$k] = rtrim($v);
         }
         $queryBlock = join("\n", $queries);
-        return explode("\n;", $queryBlock);
+        return explode(";\n", $queryBlock);
     }
 
     /**
