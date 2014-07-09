@@ -1,7 +1,7 @@
 Documentation Outline
 =====================
 
- - Installation
+ - [Installation](01-INSTALLATION.md)
  - Configuration
  - Checking for new queries to run
  - Running new queries
