@@ -14,4 +14,5 @@ parameters
 custom config mode
 
 | Previous | Root | Next |
+| -------- | ---- | ---- |
 | [Installation](01-INSTALLATION.md) | [Outline](00-OUTLINE.md) | NEXT |
