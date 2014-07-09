@@ -8,13 +8,13 @@ Add the following repository
 ```
 {
     "type": "vcs",
-    "url": "https://github.com/mike27cubes/dbsmart2"
+    "url": "https://github.com/mike27cubes/dbs2"
 }
 ```
 
 Add the following dependency requirement
 
 ```
-"27cubes/dbs2": "*"
+"27cubes/dbsmart2": "dev-master"
 ```
 
