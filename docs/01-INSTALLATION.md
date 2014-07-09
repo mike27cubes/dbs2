@@ -18,4 +18,6 @@ Add the following dependency requirement
 "27cubes/dbsmart2": "dev-master"
 ```
 
-[Return to Documentation Outline](00-OUTLINE.md)
+| Previous | Next |
+| -------- | ---- |
+| [Outline](00-OUTLINE.md) | [Configuration](00-CONFIGURATION.md) |
