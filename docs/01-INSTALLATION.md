@@ -20,4 +20,4 @@ Add the following dependency requirement
 
 | Previous | Next |
 | -------- | ---- |
-| [Outline](00-OUTLINE.md) | [Configuration](00-CONFIGURATION.md) |
+| [Outline](00-OUTLINE.md) | [Configuration](02-CONFIGURATION.md) |
