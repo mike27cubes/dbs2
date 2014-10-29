@@ -31,3 +31,4 @@ TODO
  - [x] Runner Class runs updates
  - [x] Runner Class updates tracker table
  - [x] CliRunner class handles all output responsibilities
+ - [ ] Changelog
