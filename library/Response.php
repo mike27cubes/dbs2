@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DbSmart2 Query List
+ * DbSmart2 Response
  *
  * PHP version 5.3
  *
@@ -14,7 +14,7 @@
 namespace Cubes\DbSmart2;
 
 /**
- * Query List
+ * Response
  *
  * @vendor     27 Cubes
  * @package    DbSmart2
@@ -22,19 +22,42 @@ namespace Cubes\DbSmart2;
  */
 class Response
 {
+    /**
+     * Results
+     *
+     * @var array
+     */
     protected $results = array();
 
+    /**
+     * Adds a result to the response
+     *
+     * @param  string $command
+     * @param  bool   $status  Whether the result represents a successful action
+     * @param  string $message
+     * @return self   Fluent interface
+     */
     public function addResult($command, $status, $message)
     {
         $this->results[] = array('command' => $command, 'status' => $status, 'message' => $message);
         return $this;
     }
 
+    /**
+     * Gets the results
+     *
+     * @return array
+     */
     public function getResults()
     {
         return $this->results;
     }
 
+    /**
+     * Determines if the response contains failures
+     *
+     * @return bool
+     */
     public function hasFailures()
     {
         foreach ($this->results as $result) {

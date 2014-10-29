@@ -22,9 +22,32 @@ namespace Cubes\DbSmart2;
  */
 class Config
 {
+    /**
+     * DSN
+     *
+     * @var string
+     */
     protected $dsn;
+
+    /**
+     * DB Username
+     *
+     * @var string
+     */
     protected $username;
+
+    /**
+     * DB Password
+     *
+     * @var string
+     */
     protected $password;
+
+    /**
+     * Path to upgrade files
+     *
+     * @var string
+     */
     protected $upgradePath;
 
     /**

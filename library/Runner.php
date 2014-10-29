@@ -13,14 +13,25 @@
 
 namespace Cubes\DbSmart2;
 
+/**
+ * Runner
+ *
+ * @vendor     27 Cubes
+ * @package    DbSmart2
+ * @since      %NEXT_VERSION%
+ */
 class Runner
 {
     /**
+     * Configuration
+     *
      * @var Config
      */
     protected $config;
 
     /**
+     * DB Connection
+     *
      * @var \PDO
      */
     protected $db;

@@ -56,7 +56,7 @@
     </target>
 
     <target name="phpdoc" depends="prepare">
-        <exec dir="${basedir}" executable="./vendor/bin/phpdoc.php" failonerror="false">
+        <exec dir="${basedir}" executable="./vendor/bin/phpdoc" failonerror="false">
             <arg line="-d ${basedir}/library -t ${basedir}/build/phpdoc" />
         </exec>
     </target>

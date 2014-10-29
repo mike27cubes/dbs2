@@ -13,15 +13,38 @@
 
 namespace Cubes\DbSmart2;
 
+/**
+ * CLI Runner
+ *
+ * @vendor     27 Cubes
+ * @package    DbSmart2
+ * @since      %NEXT_VERSION%
+ */
 class CliRunner
 {
+    /**
+     * Options
+     *
+     * @var array
+     */
     protected $options = array();
+
+    /**
+     * Verbosity level
+     *
+     * @var int
+     */
     protected $verbosity = self::VERBOSITY_NORMAL;
 
     const VERBOSITY_QUIET = 0;
     const VERBOSITY_NORMAL = 1;
     const VERBOSITY_LOUD = 2;
 
+    /**
+     * Constructor
+     *
+     * @param  array $options
+     */
     public function __construct($options = array())
     {
         $this->options = $options;
@@ -45,16 +68,33 @@ class CliRunner
         return $this;
     }
 
+    /**
+     * Determines if the verbosity level is "loud"
+     *
+     * @return bool
+     */
     protected function loudOutput()
     {
         return $this->verbosity == self::VERBOSITY_LOUD;
     }
 
+    /**
+     * Determines if the verbosity level is "normal" or greater
+     *
+     * @return bool
+     */
     protected function normalOutput()
     {
         return in_array($this->verbosity, array(self::VERBOSITY_NORMAL, self::VERBOSITY_LOUD));
     }
 
+    /**
+     * Run
+     *
+     * @param  string $projectRoot
+     * @param  string $command
+     * @param  array  $commandOptions
+     */
     public function run($projectRoot, $command, $commandOptions = array())
     {
         if (!empty($this->options['h'])) {
@@ -97,6 +137,11 @@ class CliRunner
         }
     }
 
+    /**
+     * Runs the Help Command
+     *
+     * @param  string $error
+     */
     public function runHelp($error = '')
     {
         echo <<<'EOH'
