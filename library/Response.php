@@ -8,7 +8,7 @@
  * @vendor     27 Cubes
  * @package    DbSmart2
  * @author     27 Cubes <info@27cubes.net>
- * @since      %NEXT_VERSION%
+ * @since      1.0.0
  */
 
 namespace Cubes\DbSmart2;
@@ -18,7 +18,7 @@ namespace Cubes\DbSmart2;
  *
  * @vendor     27 Cubes
  * @package    DbSmart2
- * @since      %NEXT_VERSION%
+ * @since      1.0.0
  */
 class Response
 {
