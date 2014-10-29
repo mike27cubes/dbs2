@@ -12,7 +12,6 @@ Goals
  - [x] configuration loaded from json file
  - [x] custom configuration via script
  - [x] Runner Commands (tests, updates, downgrades, etc) use response object to track status and messaging
- - [ ] Documentation
 
 TODO
  - [x] Switch to a specific CliRunner class
@@ -31,3 +30,5 @@ TODO
  - [x] Runner Class runs updates
  - [x] Runner Class updates tracker table
  - [x] CliRunner class handles all output responsibilities
+ - [ ] Changelog
+ - [ ] Documentation

@@ -9,7 +9,7 @@
  * @package    DbSmart2
  * @subpackage DbSmart2Tests
  * @author     27 Cubes <info@27cubes.net>
- * @since      %NEXT_VERSION%
+ * @since      1.0.0
  */
 
 namespace Cubes\DbSmart2Tests;
