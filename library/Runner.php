@@ -291,7 +291,7 @@ class Runner
      */
     protected function logExecutedSchemaId($querySetId, $queryId, $queryBlock)
     {
-        $sql = 'INSERT INTO DbSmart2 (schema_id, schema_md5) VALUES(?, ?)';
+        $sql = 'INSERT INTO DbSmart2 (schema_id, schema_md5, schema_date, schema_time) VALUES(?, ?, CURDATE(), CURTIME())';
         $db = $this->getDb();
         $stmt = $db->prepare($sql);
         if ($stmt === false) {
